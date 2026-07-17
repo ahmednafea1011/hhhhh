@@ -200,7 +200,49 @@ textarea{
 
   <button id="btnGif" disabled onclick="exportGif()">تصدير GIF تجريبي</button>
   <button id="btnApk" onclick="exportApk()">تصدير ملف تجريبي (APK)</button>
+<div class="section">
+  <h2>2. تصميم الملف وتصدير (آمن)</h2>
 
+  <button id="btnGif" disabled onclick="exportGif()">تصدير GIF تجريبي</button>
+  <button id="btnApk" onclick="exportApk()">تصدير ملف تجريبي (APK)</button>
+
+  <!-- الصق هنا -->
+
+  <div class="attacker mt-3">
+
+    <h3>اختيار ملف المعاينة</h3>
+
+    <label>
+      <input type="radio" name="mediaType" value="image" checked>
+      صورة ثابتة
+    </label>
+
+    &nbsp;&nbsp;
+
+    <label>
+      <input type="radio" name="mediaType" value="gif">
+      GIF متحرك
+    </label>
+
+    <br><br>
+
+    <input
+      type="file"
+      id="gifUpload"
+      accept="image/*,.gif"
+      onchange="loadGifPreview(event)">
+
+  </div>
+
+  <div class="attacker mt-3">
+
+    <h3>البيانات المخفية (Hidden Data)</h3>
+
+    <textarea id="hiddenBox" placeholder="اكتب النص أو البيانات هنا"></textarea>
+
+  </div>
+
+</div>
   
   </div>
 </div>
@@ -293,15 +335,34 @@ textarea{
   </div>
 </div>
 <script>
-function enableSteps() {
-  document.getElementById('btnGif').disabled = false;
-  document.getElementById('btnApk').disabled = false;
+function enableSteps(){
 
-  document.getElementById('osMsg').innerText =
-    "✅ تم تحديد النظام: " +
-    document.querySelector('input[name="os"]:checked').value;
+    document.getElementById("btnGif").disabled = false;
+    document.getElementById("btnApk").disabled = false;
+
+    const os = document.querySelector('input[name="os"]:checked');
+
+    if(os){
+        document.getElementById("osMsg").innerText =
+        "✅ تم تحديد النظام: " + os.value;
+    }
 }
-function loadGifPreview(event){
+  function loadGifPreview(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    const url = URL.createObjectURL(file);
+
+    document.getElementById("gifImage").src = url;
+    document.getElementById("gifImage").style.display = "block";
+
+    document.getElementById("gifText").style.display = "none";
+
+}
+
+  function loadGifPreview(event){
 
     const file = event.target.files[0];
     if(!file) return;
@@ -313,20 +374,7 @@ function loadGifPreview(event){
 
     document.getElementById("gifText").style.display = "none";
 }  
-<div class="attacker mt-3">
-
-<h3>اختيار ملف المعاينة</h3>
-
-<label>
-<input type="radio" name="mediaType" value="image" checked>
-صورة ثابتة
-</label>
-
-&nbsp;&nbsp;
-
-<label>
-<input type="radio" name="mediaType" value="gif">
-GIF متحرك
+  
 </label>
 
 <br><br>
@@ -404,7 +452,7 @@ resultDiv.className = statusClass;
 resultDiv.style.display = 'block';
 }
 
-updateGifPreview();
+
 </script>
 
 </body>
