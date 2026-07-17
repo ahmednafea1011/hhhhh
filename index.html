@@ -2,10 +2,12 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نظام تحليل البرامج | بحث علمي مطور</title>
-<link href=".jsdelivr.net/n5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
 :root{
   --primary:#2c3e50;
@@ -43,16 +45,20 @@ h2{color:var(--danger);font-size:1.2rem;margin-bottom:30px;}
  px;px;
   border-radius:6px;
 }
-.step h3{ 0 5px :var(--primary);}
+..step h3{
+    margin:0 0 5px 0;
+    color:var(--primary);
+}
+
 button{
-  background:var(--primary);
-  color:white;
-  border:none;
-  padding:10px 20px;
-  border-radius:5px;
-  cursor:pointer;
-  font-size:1rem;
-  margin:10px 5px 0;
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:1rem;
+    margin:10px 5px 0;
 }
 button:hover{
     background:#1a252f;
@@ -68,6 +74,7 @@ button:disabled{
   padding:30px;
   text-align:center;
   cursor:pointer;0.3}
+  
 .upload-area:hover{background:#e8f4f8;border-color:var}
 input[type="file"]{display:none;}
 #result{margin-top:20px;padding:15px;border-radius:5px;display:none;}
@@ -147,9 +154,7 @@ textarea{
     word-break: break-all;
 }
 
-  font-family:inherit;
-}
-.link-preview{
+  
   margin-top:10px;
   font-size:13px;
   color:#2980b9;
@@ -309,9 +314,10 @@ function updateGifPreview(){
   const prev = document.getElementById('gifPreview');
   const link = document.getElementById('linkPrev');
   if(type === 'shape'){
-    prev.innerText = "[ صورة / شكل GIFn" + txt;
-  }else.innerText = "[ نص داخل GIF ]\n" + txt;
-  }
+    prev.innerText = "[ صورة / شكل GIF ]\n" + txt;
+}else{
+    prev.innerText = "[ نص داخل GIF ]\n" + txt;
+}
   link.innerText = "رابط محاكاة: https://wa-gift-x.com/funny.gif?q=" + encodeURIComponent(txt);
 }
 
@@ -329,21 +335,29 @@ function exportGif() {
 
     alert("تم تصدير GIF تجريبي آمن");
 }
-function exportApk(){
-  const apkData = "Android Safe Simulation File";
-  const blob = new Blob([apkData],application/vnd.android.package-archive'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download_safe.apk";
-  a.click();
-  alert("تم تصدير ملف تجريبي آمن");
+function exportApk() {
+    const apkData = "Android Safe Simulation File";
+
+    const blob = new Blob([apkData], {
+        type: "application/vnd.android.package-archive"
+    });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "sample_safe.apk";
+    a.click();
+
+    alert("تم تصدير ملف تجريبي آمن");
 }
 
 function analyzeFile(){
   const input = document.getElementById('fileInput');
   const resultDiv = document.getElementById('result');
   const os = document.querySelector('input[name=os]:checked');
-  if alert("حدد نظام التشغيل أولاً"); return; }
+if(!os){
+    alert("حدد نظام التشغيل أولاً");
+    return;
+}
   if(input.files.length === 0){ alert("اختر ملفاً"); return; }
   const file = input.files[0];
   const fileName = file.name.toLowerCase();
@@ -360,7 +374,7 @@ function analyzeFile(){
   if(file.size > 5000000){
     status = "خطر ⚠️";
     statusClass = "malicious";
-    detailsجم الملف كبير جداً - محاكاة فقط.";
+details = "حجم الملف كبير جداً - محاكاة فقط.";
   }
   document.getElementById('osType').innerText = os.value;
 document.getElementById('fName').innerText = file.name;
