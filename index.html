@@ -521,7 +521,7 @@ function loadGifPreview(event){
 
     if(!file) return;
 
-    // التحقق م�� نوع الملف
+    // التحقق من نوع الملف
     if(!file.type.startsWith('image/')) {
         alert("الرجاء اختيار ملف صورة أو GIF صحيح");
         document.getElementById("gifUpload").value = "";
@@ -548,44 +548,51 @@ function loadGifPreview(event){
 // Event listener لتحميل معاينة GIF
 document.getElementById("gifUpload").addEventListener("change", loadGifPreview);
 
-// إنشاء ملف GIF حقيقي بسيط (1x1 بكسل أبيض)
-function createSimpleGif() {
-    // GIF87a - أبسط صيغة GIF
-    const gifArray = [
-        0x47, 0x49, 0x46,           // GIF
-        0x38, 0x37, 0x61,           // 87a
-        0x01, 0x00,                 // عرض 1
-        0x01, 0x00,                 // ارتفاع 1
-        0x80, 0x00, 0x00,           // Global Color Table
-        0xFF, 0xFF, 0xFF,           // أبيض
-        0x00, 0x00, 0x00,           // أسود
-        0x2C, 0x00, 0x00, 0x00, 0x00, // Image descriptor
-        0x01, 0x00, 0x01, 0x00, 0x00,
-        0x02, 0x02, 0x44, 0x01, 0x00, // Image data
-        0x3B                         // Trailer
-    ];
+// 🎯 دالة تصدير GIF محسّنة - تصدر الصورة المرفوعة كـ GIF
+function exportGif() {
+    const fileInput = document.getElementById('gifUpload');
     
-    return new Uint8Array(gifArray);
+    if(fileInput.files.length === 0) {
+        alert("⚠️ اختر صورة أو GIF أولاً!");
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            // إنشاء canvas بحجم الصورة
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            
+            // تحويل canvas لـ blob وتنزيل
+            canvas.toBlob(function(blob) {
+                downloadGif(blob, 'exported_image.gif');
+            }, 'image/gif');
+        };
+        img.src = e.target.result;
+    };
+    
+    reader.readAsDataURL(file);
 }
 
-// تصدير ملف GIF
-function exportGif() {
-    try {
-        const gifData = createSimpleGif();
-        const blob = new Blob([gifData], { type: "image/gif" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "sample_safe.gif";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        alert("✅ تم تصدير GIF تجريبي آمن بنجاح!");
-    } catch(error) {
-        console.error("خطأ في تصدير GIF:", error);
-        alert("❌ حدث خطأ في تصدير GIF");
-    }
+// دالة مساعدة للتنزيل
+function downloadGif(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert("✅ تم التصدير بنجاح!");
 }
 
 // تصدير ملف APK تجريبي
