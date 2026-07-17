@@ -162,6 +162,7 @@ code{
   background:#eee;
   padding:2px 6px;
   border-radius:4px;
+  word-break: break-all;
 }
 
 .phone{
@@ -211,6 +212,12 @@ code{
   white-space: pre-wrap;
   overflow:auto;
   flex-grow: 1;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.wa-gif:hover {
+  background: #d0d8e0;
 }
 
 .wa-gif img {
@@ -276,6 +283,10 @@ textarea{
   font-size: 13px;
   color: #2980b9;
   word-break: break-all;
+  padding: 10px;
+  background: #e3f2fd;
+  border-radius: 6px;
+  border: 1px solid #90caf9;
 }
 
 .media-controls {
@@ -358,6 +369,144 @@ input[type="radio"] {
   margin: 0;
 }
 
+.link-container {
+  background: #e8f5e9;
+  border: 2px solid #4caf50;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+  display: none;
+}
+
+.link-container h4 {
+  color: #2e7d32;
+  margin-top: 0;
+}
+
+.link-container .link-box {
+  background: white;
+  border: 1px solid #81c784;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  word-break: break-all;
+  overflow-x: auto;
+}
+
+.link-container .link-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.link-container button {
+  margin: 0;
+  flex: 1;
+}
+
+/* Modal للمشاهد */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  animation: fadeIn 0.3s;
+}
+
+.modal-content {
+  background-color: white;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #2c3e50;
+  padding-bottom: 10px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.close-btn {
+  font-size: 28px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+.modal-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.modal-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.modal-controls button {
+  flex: 1;
+  margin: 0;
+}
+
+.hidden-data-section {
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 15px 0;
+  border-left: 4px solid #ff9800;
+}
+
+.hidden-data-section h4 {
+  margin: 0 0 10px 0;
+  color: #e65100;
+}
+
+.hidden-data-content {
+  background: white;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  word-break: break-all;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 </style>
 </head>
 <body>
@@ -393,7 +542,7 @@ input[type="radio"] {
 
     <div class="btn-group">
       <button id="btnGif" onclick="exportGif()" disabled>📤 تصدير GIF</button>
-      <button id="btnApk" onclick="exportApk()" disabled>📱 تصدير ملف (APK)</button>
+      <button id="btnApk" onclick="generateShareableLink()" disabled>🔗 إنشاء رابط مشاركة APK</button>
     </div>
 
     <!-- اختيار ملف المعاينة -->
@@ -427,7 +576,7 @@ input[type="radio"] {
     <!-- البيانات المخفية -->
     <div class="attacker">
       <h3>🔐 البيانات المخفية (Hidden Data)</h3>
-      <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">💡 اكتب البيانات/الكود هنا - ستظهر داخل الـ GIF في محاكاة الواتساب</p>
+      <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">💡 اكتب البيانات/الكود هنا - ستظهر داخل الـ GIF و الرابط المشاركة</p>
       <textarea id="hiddenBox" placeholder="مثال: 
 db_password: 12345abc
 api_key: xyz789
@@ -436,6 +585,18 @@ admin_url: http://..." oninput="updateHiddenDataPreview()"></textarea>
       <div class="controls-group">
         <button onclick="copyHiddenData()" style="flex: 1;">📋 نسخ البيانات</button>
         <button onclick="clearHiddenData()" style="flex: 1;">🗑️ مسح البيانات</button>
+      </div>
+    </div>
+
+    <!-- عرض الرابط المشاركة -->
+    <div class="link-container" id="linkContainer">
+      <h4>🔗 رابط المشاركة (Shareable Link)</h4>
+      <p style="font-size: 0.9rem; color: #555; margin: 0 0 10px 0;">انسخ هذا الرابط وأرسله لأي شخص - سيتمكن من رؤية الصورة والبيانات:</p>
+      <div class="link-box" id="linkBox"></div>
+      <div class="link-controls">
+        <button onclick="copyLink()">📋 نسخ الرابط</button>
+        <button onclick="openLink()">🔍 فتح الرابط</button>
+        <button onclick="shareLink()">📱 مشاركة</button>
       </div>
     </div>
   </div>
@@ -448,14 +609,14 @@ admin_url: http://..." oninput="updateHiddenDataPreview()"></textarea>
     <div class="phone">
       <div class="wa-header">💬 WhatsApp</div>
       <div class="wmsg">👤 صديق: شوف الصورة دي</div>
-      <div class="wa-gif" id="gifPreview">
+      <div class="wa-gif" id="gifPreview" onclick="openImageModal()">
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
           <img id="gifImage" src="" alt="صورة مرفوعة" style="display:none; max-height: 60%;">
           <span id="gifText" style="display: none;">[ معاينة الملف ]</span>
           <div id="hiddenDataPreview" class="hidden-data-display"></div>
         </div>
       </div>
-      <div class="exploit">⚠️ منطقة شرح بحثي فقط - محاكاة آمنة</div>
+      <div class="exploit">⚠️ اضغط على الصورة لفتحها - محاكاة آمنة</div>
     </div>
 
     <!-- الخطوات التفصيلية -->
@@ -466,12 +627,12 @@ admin_url: http://..." oninput="updateHiddenDataPreview()"></textarea>
 
     <div class="step attacker">
       <h3>✏️ الخطوة 2: فتح الملف / الرابط</h3>
-      <p>• لو Android: يتم فتح الملف عبر WebView<br>• لو iOS: معالج الصور الافتراضي + البيانات المرسلة</p>
+      <p>• المستقبل بيضغط على الصورة فتظهر في نافذة كاملة<br>• يقدر يعمل save للصورة وتحميلها</p>
     </div>
 
     <div class="step attacker">
       <h3>✏️ الخطوة 3: استخراج البيانات المخفية</h3>
-      <p>يتم فحص البيانات المرسلة داخل الـ GIF والتحقق من الملفات الوصفية والبيانات المخفية لأغراض البحث فقط.</p>
+      <p>البيانات المخفية تظهر كاملة لما يفتح الصورة في النافذة الكاملة.</p>
     </div>
 
     <div class="step attacker">
@@ -527,7 +688,35 @@ admin_url: http://..." oninput="updateHiddenDataPreview()"></textarea>
 
 </div>
 
+<!-- Modal لعرض الصورة الكاملة -->
+<div id="imageModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>📸 الصورة</h2>
+      <button class="close-btn" onclick="closeImageModal()">&times;</button>
+    </div>
+    
+    <img id="modalImage" class="modal-image" src="" alt="صورة مرفوعة">
+    
+    <!-- البيانات المخفية -->
+    <div class="hidden-data-section" id="hiddenDataSection" style="display:none;">
+      <h4>🔐 البيانات المخفية:</h4>
+      <div class="hidden-data-content" id="modalHiddenData"></div>
+    </div>
+
+    <div class="modal-controls">
+      <button onclick="downloadImage()">💾 حفظ الصورة</button>
+      <button onclick="copyHiddenDataFromModal()">📋 نسخ البيانات</button>
+      <button onclick="closeImageModal()">❌ إغلاق</button>
+    </div>
+  </div>
+</div>
+
 <script>
+// متغيرات عامة
+let currentImageData = null;
+let currentHiddenData = '';
+
 // تفعيل الأزرار عند اختيار النظام
 function enableSteps(){
     const btnGif = document.getElementById("btnGif");
@@ -565,6 +754,7 @@ function updateHiddenDataPreview() {
     const hiddenDataPreview = document.getElementById('hiddenDataPreview');
     
     const hiddenData = hiddenBox.value.trim();
+    currentHiddenData = hiddenData;
     
     if(hiddenData) {
         // عرض البيانات مع تنسيق
@@ -601,6 +791,7 @@ function clearHiddenData() {
     if(confirm("⚠️ هل تريد مسح جميع البيانات المخفية؟")) {
         document.getElementById('hiddenBox').value = '';
         document.getElementById('hiddenDataPreview').style.display = 'none';
+        currentHiddenData = '';
         console.log("🗑️ تم مسح البيانات المخفية");
     }
 }
@@ -621,6 +812,7 @@ function loadGifPreview(event){
     console.log("تم اختيار ملف:", file.name, "الحجم:", file.size, "النوع:", file.type);
 
     const url = URL.createObjectURL(file);
+    currentImageData = url;
 
     // عرض المعاينة في قسم الملفات المرفوعة
     const previewDiv = document.getElementById("mediaPreview");
@@ -661,10 +853,160 @@ function loadGifPreview(event){
     updateHiddenDataPreview();
 }
 
-// 🎯 دالة تصدير GIF محسّنة - تصدر الصورة المرفوعة مع البيانات المخفية
-function exportGif() {
+// 🎯 إنشاء رابط مشاركة
+function generateShareableLink() {
     const fileInput = document.getElementById('gifUpload');
     const hiddenData = document.getElementById('hiddenBox').value;
+    
+    if(fileInput.files.length === 0) {
+        alert("⚠️ اختر صورة أولاً!");
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const imageData = e.target.result;
+        const hiddenDataEncoded = btoa(hiddenData); // تشفير البيانات
+        
+        // إنشاء رابط مع البيانات في query parameter
+        const link = `${window.location.origin}${window.location.pathname}?image=${imageData.substring(0, 100)}&hidden=${hiddenDataEncoded}&mode=view`;
+        
+        // عرض الرابط في الصفحة
+        const linkBox = document.getElementById('linkBox');
+        linkBox.textContent = link;
+        document.getElementById('linkContainer').style.display = 'block';
+        
+        // حفظ البيانات في localStorage للمشاركة
+        const shareId = 'share_' + Date.now();
+        const shareData = {
+            image: imageData,
+            hidden: hiddenData,
+            timestamp: new Date().toISOString()
+        };
+        localStorage.setItem(shareId, JSON.stringify(shareData));
+        
+        // إنشاء رابط أقصر
+        const shortLink = `${window.location.origin}${window.location.pathname}?id=${shareId}`;
+        linkBox.textContent = shortLink;
+        
+        console.log("🔗 تم إنشاء رابط المشاركة:", shortLink);
+        alert("✅ تم إنشاء رابط المشاركة بنجاح!");
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// نسخ الرابط
+function copyLink() {
+    const linkBox = document.getElementById('linkBox');
+    const link = linkBox.textContent;
+    
+    if(!link) {
+        alert("⚠️ لا يوجد رابط لنسخه");
+        return;
+    }
+
+    navigator.clipboard.writeText(link).then(() => {
+        alert("✅ تم نسخ الرابط!");
+    }).catch(err => {
+        alert("❌ فشل نسخ الرابط");
+    });
+}
+
+// فتح الرابط
+function openLink() {
+    const linkBox = document.getElementById('linkBox');
+    const link = linkBox.textContent;
+    
+    if(!link) {
+        alert("⚠️ لا يوجد رابط");
+        return;
+    }
+
+    window.open(link, '_blank');
+}
+
+// مشاركة الرابط
+function shareLink() {
+    const linkBox = document.getElementById('linkBox');
+    const link = linkBox.textContent;
+    
+    if(!link) {
+        alert("⚠️ لا يوجد رابط");
+        return;
+    }
+
+    if(navigator.share) {
+        navigator.share({
+            title: '📸 صورة مشفرة',
+            text: 'شوف هذه الصورة المشفرة',
+            url: link
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        alert("📋 الرابط:\n" + link + "\n\nيمكنك نسخه ومشاركته يدويًا");
+    }
+}
+
+// فتح modal الصورة
+function openImageModal() {
+    const gifImage = document.getElementById('gifImage');
+    
+    if(!gifImage.src || gifImage.style.display === 'none') {
+        alert("⚠️ لم يتم اختيار صورة بعد");
+        return;
+    }
+
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const hiddenDataSection = document.getElementById('hiddenDataSection');
+    const modalHiddenData = document.getElementById('modalHiddenData');
+    
+    modalImage.src = gifImage.src;
+    
+    if(currentHiddenData) {
+        hiddenDataSection.style.display = 'block';
+        modalHiddenData.textContent = currentHiddenData;
+    } else {
+        hiddenDataSection.style.display = 'none';
+    }
+    
+    modal.style.display = 'block';
+}
+
+// إغلاق modal
+function closeImageModal() {
+    document.getElementById('imageModal').style.display = 'none';
+}
+
+// حفظ الصورة
+function downloadImage() {
+    const modalImage = document.getElementById('modalImage');
+    const link = document.createElement('a');
+    link.href = modalImage.src;
+    link.download = 'image_' + Date.now() + '.jpg';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    alert("✅ تم حفظ الصورة!");
+}
+
+// نسخ البيانات من modal
+function copyHiddenDataFromModal() {
+    if(!currentHiddenData) {
+        alert("⚠️ لا توجد بيانات مخفية");
+        return;
+    }
+
+    navigator.clipboard.writeText(currentHiddenData).then(() => {
+        alert("✅ تم نسخ البيانات!");
+    });
+}
+
+// تصدير GIF
+function exportGif() {
+    const fileInput = document.getElementById('gifUpload');
     
     if(fileInput.files.length === 0) {
         alert("⚠️ اختر صورة أو GIF أولاً!");
@@ -675,90 +1017,16 @@ function exportGif() {
     const reader = new FileReader();
     
     reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-            // إنشاء canvas بحجم الصورة
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            
-            // إذا كانت هناك بيانات مخفية، نضيفها كنص على الصورة
-            if(hiddenData) {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
-                ctx.fillStyle = '#FFF';
-                ctx.font = '12px Arial';
-                ctx.fillText('🔐 Hidden: ' + hiddenData.substring(0, 30) + '...', 5, canvas.height - 15);
-            }
-            
-            // تحويل canvas لـ blob وتنزيل
-            canvas.toBlob(function(blob) {
-                downloadGif(blob, 'exported_image_with_data.gif', hiddenData);
-            }, 'image/gif');
-        };
-        
-        img.onerror = function() {
-            console.error("❌ خطأ في معالجة الصورة");
-            alert("❌ خطأ في معالجة الصورة");
-        };
-        
-        img.src = e.target.result;
-    };
-
-    reader.onerror = function() {
-        console.error("❌ خطأ في قراءة الملف");
-        alert("❌ خطأ في قراءة الملف");
+        const link = document.createElement('a');
+        link.href = e.target.result;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        alert("✅ تم تصدير الملف بنجاح!");
     };
     
     reader.readAsDataURL(file);
-}
-
-// دالة مساعدة للتنزيل
-function downloadGif(blob, fileName, hiddenData) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    // تنظيف الموارد بعد تأخير بسيط
-    setTimeout(() => {
-        URL.revokeObjectURL(url);
-    }, 100);
-    
-    console.log("✅ تم تصدير GIF مع البيانات المخفية:", hiddenData);
-    alert("✅ تم التصدير بنجاح!\n📊 البيانات المخفية تم إضافتها للصورة");
-}
-
-// تصدير ملف APK تجريبي
-function exportApk() {
-    try {
-        const hiddenData = document.getElementById('hiddenBox').value;
-        const apkData = "Android Safe Simulation File\n\nHidden Data:\n" + (hiddenData || "No data");
-        const blob = new Blob([apkData], { type: "application/vnd.android.package-archive" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "sample_safe_with_data.apk";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        setTimeout(() => {
-            URL.revokeObjectURL(url);
-        }, 100);
-        
-        console.log("✅ تم تصدير APK مع البيانات:", hiddenData);
-        alert("✅ تم تصدير ملف APK تجريبي آمن بنجاح!\n📊 البيانات المخفية مضمنة في الملف");
-    } catch(error) {
-        console.error("خطأ في تصدير APK:", error);
-        alert("❌ حدث خطأ في تصدير APK");
-    }
 }
 
 // تحليل الملف المرفوع
@@ -826,6 +1094,14 @@ function analyzeFile(){
     });
 }
 
+// إغلاق modal عند الضغط خارجه
+window.onclick = function(event) {
+    const modal = document.getElementById('imageModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
 // ⚙️ إعداد event listeners عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
     // ربط حدث التغيير لـ file input
@@ -833,6 +1109,36 @@ document.addEventListener('DOMContentLoaded', function() {
     if(gifUploadInput) {
         gifUploadInput.addEventListener('change', loadGifPreview);
         console.log("✅ تم ربط event listener للـ gif upload");
+    }
+
+    // التحقق من وجود بيانات مشاركة
+    const urlParams = new URLSearchParams(window.location.search);
+    const shareId = urlParams.get('id');
+    
+    if(shareId) {
+        const shareData = localStorage.getItem(shareId);
+        if(shareData) {
+            const data = JSON.parse(shareData);
+            console.log("📥 تم استعادة بيانات مشاركة");
+            
+            // عرض الصورة والبيانات المخفية في modal
+            setTimeout(() => {
+                const modal = document.getElementById('imageModal');
+                const modalImage = document.getElementById('modalImage');
+                const hiddenDataSection = document.getElementById('hiddenDataSection');
+                const modalHiddenData = document.getElementById('modalHiddenData');
+                
+                modalImage.src = data.image;
+                currentHiddenData = data.hidden;
+                
+                if(data.hidden) {
+                    hiddenDataSection.style.display = 'block';
+                    modalHiddenData.textContent = data.hidden;
+                }
+                
+                modal.style.display = 'block';
+            }, 500);
+        }
     }
 
     console.log("✅ نظام تحليل البرامج - تم تحميل JavaScript بنجاح");
