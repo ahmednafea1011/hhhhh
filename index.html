@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -59,9 +60,7 @@ button:disabled{background:#95a5a:not-allowed;}
   border:2px dashed #bdc3c7;
   padding:30px;
   text-align:center;
-  cursor:pointer;
-0.3
-}
+  cursor:pointer;0.3}
 .upload-area:hover{background:#e8f4f8;border-color:var}
 input[type="file"]{display:none;}
 #result{margin-top:20px;padding:15px;border-radius:5px;display:none;}
@@ -142,26 +141,39 @@ textarea{
 
 <div class="section">
   <h2>1. تحديد نظام التشغيل</h2>
+
   <div class="os-select">
-    <label><input type="radio" name="os" value" onclick="enableSteps()"> Android</label>
+    <label>
+      <input type="radio" name="os" value="Android" onclick="enableSteps()">
+      Android
+    </label>
+
     &nbsp;&nbsp;
-    <label><input type="radio" name="os" value="iOS" onclick="enableSteps()"> iOS</label>
+
+    <label>
+      <input type="radio" name="os" value="iOS" onclick="enableSteps()">
+      iOS
+    </label>
   </div>
- ="osMsg">حديد النظام أولاً لتفعيل باقي الخ.</p>
+
+  <p id="osMsg">
+    ⚠ يجب تحديد النظام أولاً لتفعيل باقي الخطوات.
+  </p>
 </div>
 
 <div class="section">
-  <h2>2. تصميم الملف )</h2>
-  <button id="btnGif" disabled onclick="exportGif() GIF </button>
- id="btnApk="exportApk()"</button>
+  <h2>2. تصميم الملف وتصدير (آمن)</h2>
+  <button id="btnGif" disabled onclick="exportGif()">تصدير GIF تجريبي</button>
+ <button id="btnApk" onclick="exportApk()">تصدير ملف تجريبي (APK)</button>
   <div class="attacker mt-3">
     <h3>تحديد ناينة GIF</h3>
     <label><input type="radio"ifType" value="shape" checked onclick="updateGifPreview()"> ش &nbsp;&nbsp;
 ><input type name="gifType" value="text" onclick="updateGifPreview()"> كلام (نص)</label>
+>
   <div class="attacker mt-3">
     <h3>صندوق ملاحظات البحث (مكتوب "م" سابقاً)</h3>
     <textarea id="hiddenBox" oninput="updateGifPreview()">م</textarea>
-    <div class="link-preview" id="linkPrev"> https://wa-gift-x.com/funny.gif?q=م</div>
+    <div class="link-preview" id="linkPrev">رابط محاكاة: https://wa-gift-x.com/funny.gif?q=م</div>
   </div>
 </div>
 
@@ -174,7 +186,7 @@ textarea{
     <div class="exploit">⚠ منطقة شرح البحث فقط</div>
   </div>
   <div class="step attacker">
-    <h3>الخطوة 1: إرسال الملف على واب</h <p>الضحية بتفتح المحادث واتساب بيعمل تلقائية.</p>
+    <h3>الخطوة 1: إرسال الملف على واب</h <p>الضحية بتفتح المحادثواتساب بيعمل تلقائية.</p>
   </divdiv class="step attacker">
     <h3>الخطوة 2: فتح الملف / الرابط</h3>
     <p>لو Android: WebView.: معالج الصور.</p>
@@ -226,16 +238,20 @@ function updateGifPreview(){
   link.innerText = "رابط محاكاة: https://wa-gift-x.com/funny.gif?q=" + encodeURIComponent(txt);
 }
 
-function exportGif(){
-  const gifData = "GIF89a SIMULATION SAFE FILE";
-  const blob = newifData],image/gif'});
-  const a = document.createElement('a');
-  a.createObjectURL(blob);
-  a.download = "sample_safe.gif";
-  a.click();
-  alert("تم تصدير GIF تجريبي آمن");
-}
+function exportGif() {
+    const gifData = "GIF89a SIMULATION SAFE FILE";
 
+    const blob = new Blob([gifData], {
+        type: "image/gif"
+    });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "sample_safe.gif";
+    a.click();
+
+    alert("تم تصدير GIF تجريبي آمن");
+}
 function exportApk(){
   const apkData = "Android Safe Simulation File";
   const blob = new Blob([apkData],application/vnd.android.package-archive'});
@@ -270,13 +286,18 @@ function analyzeFile(){
     detailsجم الملف كبير جداً - محاكاة فقط.";
   }
   document.getElementById('osType').innerText = os.value;
-  document.getElementById('fName'). file.name;
-  document.getElementById('fType').innerText = fileType;
-  document.getElementById('fSize').innerText = fileSize;
-  document.getElementById('fStatus').innerText =  document.getElementById('detailsText').innerText = details;
-  resultDiv.className = statusClass;
-  resultDiv.style.display = 'block';GifPreview();
+document.getElementById('fName').innerText = file.name;
+document.getElementById('fType').innerText = fileType;
+document.getElementById('fSize').innerText = fileSize;
+document.getElementById('fStatus').innerText = status;
+document.getElementById('detailsText').innerText = details;
+
+resultDiv.className = statusClass;
+resultDiv.style.display = 'block';
+}
+
+updateGifPreview();
 </script>
+
 </body>
 </html>
-
