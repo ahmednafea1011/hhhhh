@@ -166,7 +166,7 @@ code{
 
 .phone{
   width:250px;
-  height:400px;
+  height:450px;
   background:#ecf0f1;
   border-radius:20px;
   margin:15px auto;
@@ -209,7 +209,7 @@ code{
   font-weight: bold;
   text-align: center;
   white-space: pre-wrap;
-  overflow:hidden;
+  overflow:auto;
   flex-grow: 1;
 }
 
@@ -219,6 +219,26 @@ code{
   object-fit: contain;
   border-radius: 8px;
   display:block;
+}
+
+.hidden-data-display {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 12px;
+  max-height: 80px;
+  overflow-y: auto;
+  color: #495057;
+  font-family: 'Courier New', monospace;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.hidden-data-display:empty::before {
+  content: "[ لا توجد بيانات مخفية ]";
+  color: #999;
 }
 
 .exploit{
@@ -247,7 +267,7 @@ textarea{
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 8px;
-  font-family: inherit;
+  font-family: 'Courier New', monospace;
   resize:vertical;
 }
 
@@ -325,6 +345,19 @@ input[type="radio"] {
   font-weight: 500;
 }
 
+.controls-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.controls-group button {
+  flex: 1;
+  min-width: 100px;
+  margin: 0;
+}
+
 </style>
 </head>
 <body>
@@ -394,7 +427,16 @@ input[type="radio"] {
     <!-- البيانات المخفية -->
     <div class="attacker">
       <h3>🔐 البيانات المخفية (Hidden Data)</h3>
-      <textarea id="hiddenBox" placeholder="اكتب النص أو البيانات هنا لأغراض البحث..."></textarea>
+      <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">💡 اكتب البيانات/الكود هنا - ستظهر داخل الـ GIF في محاكاة الواتساب</p>
+      <textarea id="hiddenBox" placeholder="مثال: 
+db_password: 12345abc
+api_key: xyz789
+admin_url: http://..." oninput="updateHiddenDataPreview()"></textarea>
+
+      <div class="controls-group">
+        <button onclick="copyHiddenData()" style="flex: 1;">📋 نسخ البيانات</button>
+        <button onclick="clearHiddenData()" style="flex: 1;">🗑️ مسح البيانات</button>
+      </div>
     </div>
   </div>
 
@@ -407,8 +449,11 @@ input[type="radio"] {
       <div class="wa-header">💬 WhatsApp</div>
       <div class="wmsg">👤 صديق: شوف الصورة دي</div>
       <div class="wa-gif" id="gifPreview">
-        <img id="gifImage" src="" alt="صورة مرفوعة">
-        <span id="gifText">[ معاينة الملف ]</span>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
+          <img id="gifImage" src="" alt="صورة مرفوعة" style="display:none; max-height: 60%;">
+          <span id="gifText" style="display: none;">[ معاينة الملف ]</span>
+          <div id="hiddenDataPreview" class="hidden-data-display"></div>
+        </div>
       </div>
       <div class="exploit">⚠️ منطقة شرح بحثي فقط - محاكاة آمنة</div>
     </div>
@@ -416,17 +461,17 @@ input[type="radio"] {
     <!-- الخطوات التفصيلية -->
     <div class="step attacker">
       <h3>✏️ الخطوة 1: إرسال الملف على واتساب</h3>
-      <p>الضحية بتفتح المحادثة والواتساب بيعمل معاينة تلقائية للصورة أو GIF.</p>
+      <p>الضحية بتفتح المحادثة والواتساب بيعمل معاينة تلقائية للصورة أو GIF والبيانات المخفية.</p>
     </div>
 
     <div class="step attacker">
       <h3>✏️ الخطوة 2: فتح الملف / الرابط</h3>
-      <p>• لو Android: يتم فتح الملف عبر WebView<br>• لو iOS: معالج الصور الافتراضي</p>
+      <p>• لو Android: يتم فتح الملف عبر WebView<br>• لو iOS: معالج الصور الافتراضي + البيانات المرسلة</p>
     </div>
 
     <div class="step attacker">
-      <h3>✏️ الخطوة 3: تحليل المحتوى</h3>
-      <p>يتم فحص البيانات المرسلة والتحقق من الملفات الوصفية والبيانات المخفية لأغراض البحث فقط.</p>
+      <h3>✏️ الخطوة 3: استخراج البيانات المخفية</h3>
+      <p>يتم فحص البيانات المرسلة داخل الـ GIF والتحقق من الملفات الوصفية والبيانات المخفية لأغراض البحث فقط.</p>
     </div>
 
     <div class="step attacker">
@@ -514,6 +559,52 @@ function updateMediaType() {
     }
 }
 
+// تحديث معاينة البيانات المخفية
+function updateHiddenDataPreview() {
+    const hiddenBox = document.getElementById('hiddenBox');
+    const hiddenDataPreview = document.getElementById('hiddenDataPreview');
+    
+    const hiddenData = hiddenBox.value.trim();
+    
+    if(hiddenData) {
+        // عرض البيانات مع تنسيق
+        hiddenDataPreview.textContent = '🔐 Data: ' + hiddenData.substring(0, 100);
+        hiddenDataPreview.style.display = 'block';
+    } else {
+        hiddenDataPreview.style.display = 'none';
+    }
+
+    console.log("📊 البيانات المخفية محدثة:", hiddenData);
+}
+
+// نسخ البيانات المخفية
+function copyHiddenData() {
+    const hiddenBox = document.getElementById('hiddenBox');
+    const hiddenData = hiddenBox.value.trim();
+    
+    if(!hiddenData) {
+        alert("⚠️ لا توجد بيانات لنسخها");
+        return;
+    }
+
+    navigator.clipboard.writeText(hiddenData).then(() => {
+        alert("✅ تم نسخ البيانات إلى الحافظة!");
+        console.log("📋 تم نسخ البيانات:", hiddenData);
+    }).catch(err => {
+        alert("❌ فشل نسخ البيانات");
+        console.error("خطأ:", err);
+    });
+}
+
+// مسح البيانات المخفية
+function clearHiddenData() {
+    if(confirm("⚠️ هل تريد مسح جميع البيانات المخفية؟")) {
+        document.getElementById('hiddenBox').value = '';
+        document.getElementById('hiddenDataPreview').style.display = 'none';
+        console.log("🗑️ تم مسح البيانات المخفية");
+    }
+}
+
 // تحميل معاينة الملف المرفوع
 function loadGifPreview(event){
     const file = event.target.files[0];
@@ -565,11 +656,15 @@ function loadGifPreview(event){
         gifImage.style.display = "none";
         document.getElementById("gifText").style.display = "block";
     };
+
+    // تحديث معاينة البيانات المخفية
+    updateHiddenDataPreview();
 }
 
-// 🎯 دالة تصدير GIF محسّنة - تصدر الصورة المرفوعة كـ GIF
+// 🎯 دالة تصدير GIF محسّنة - تصدر الصورة المرفوعة مع البيانات المخفية
 function exportGif() {
     const fileInput = document.getElementById('gifUpload');
+    const hiddenData = document.getElementById('hiddenBox').value;
     
     if(fileInput.files.length === 0) {
         alert("⚠️ اختر صورة أو GIF أولاً!");
@@ -590,9 +685,18 @@ function exportGif() {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
             
+            // إذا كانت هناك بيانات مخفية، نضيفها كنص على الصورة
+            if(hiddenData) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+                ctx.fillStyle = '#FFF';
+                ctx.font = '12px Arial';
+                ctx.fillText('🔐 Hidden: ' + hiddenData.substring(0, 30) + '...', 5, canvas.height - 15);
+            }
+            
             // تحويل canvas لـ blob وتنزيل
             canvas.toBlob(function(blob) {
-                downloadGif(blob, 'exported_image.gif');
+                downloadGif(blob, 'exported_image_with_data.gif', hiddenData);
             }, 'image/gif');
         };
         
@@ -613,7 +717,7 @@ function exportGif() {
 }
 
 // دالة مساعدة للتنزيل
-function downloadGif(blob, fileName) {
+function downloadGif(blob, fileName, hiddenData) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -627,18 +731,20 @@ function downloadGif(blob, fileName) {
         URL.revokeObjectURL(url);
     }, 100);
     
-    alert("✅ تم التصدير بنجاح!");
+    console.log("✅ تم تصدير GIF مع البيانات المخفية:", hiddenData);
+    alert("✅ تم التصدير بنجاح!\n📊 البيانات المخفية تم إضافتها للصورة");
 }
 
 // تصدير ملف APK تجريبي
 function exportApk() {
     try {
-        const apkData = "Android Safe Simulation File";
+        const hiddenData = document.getElementById('hiddenBox').value;
+        const apkData = "Android Safe Simulation File\n\nHidden Data:\n" + (hiddenData || "No data");
         const blob = new Blob([apkData], { type: "application/vnd.android.package-archive" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "sample_safe.apk";
+        a.download = "sample_safe_with_data.apk";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -647,7 +753,8 @@ function exportApk() {
             URL.revokeObjectURL(url);
         }, 100);
         
-        alert("✅ تم تصدير ملف APK تجريبي آمن بنجاح!");
+        console.log("✅ تم تصدير APK مع البيانات:", hiddenData);
+        alert("✅ تم تصدير ملف APK تجريبي آمن بنجاح!\n📊 البيانات المخفية مضمنة في الملف");
     } catch(error) {
         console.error("خطأ في تصدير APK:", error);
         alert("❌ حدث خطأ في تصدير APK");
@@ -659,6 +766,7 @@ function analyzeFile(){
     const input = document.getElementById('fileInput');
     const resultDiv = document.getElementById('result');
     const os = document.querySelector('input[name="os"]:checked');
+    const hiddenData = document.getElementById('hiddenBox').value;
 
     if(!os){
         alert("⚠️ حدد نظام التشغيل أولاً");
@@ -683,6 +791,10 @@ function analyzeFile(){
     let statusClass = "safe";
     let details = "الملف لا يحتوي على علامات خبيثة معروفة (محاكاة تعليمية).";
     
+    if(hiddenData) {
+        details += `\n\n📊 البيانات المخفية المكتشفة:\n${hiddenData}`;
+    }
+    
     if(fileName.includes('exploit') || fileName.includes('hack') || fileName.includes('malware')){
         status = "خطر ⚠️";
         statusClass = "malicious";
@@ -690,7 +802,7 @@ function analyzeFile(){
     }
     
     if(file.size > 5000000){
-        status = "حذر ⚠���";
+        status = "حذر ⚠️";
         statusClass = "malicious";
         details = "⚠️ حجم الملف كبير جداً - قد يحتوي على بيانات مريبة (محاكاة فقط).";
     }
@@ -704,6 +816,14 @@ function analyzeFile(){
 
     resultDiv.className = statusClass;
     resultDiv.style.display = 'block';
+
+    console.log("📊 تحليل الملف:", {
+        name: file.name,
+        size: fileSize,
+        type: fileType,
+        os: os.value,
+        hiddenData: hiddenData
+    });
 }
 
 // ⚙️ إعداد event listeners عند تحميل الصفحة
