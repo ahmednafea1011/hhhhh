@@ -201,36 +201,7 @@ textarea{
   <button id="btnGif" disabled onclick="exportGif()">تصدير GIF تجريبي</button>
   <button id="btnApk" onclick="exportApk()">تصدير ملف تجريبي (APK)</button>
 
-  <div class="attacker mt-3">
-    <h3>تحديد نوع معاينة GIF</h3>
-
-    <label>
-      <input type="radio" name="gifType" value="shape" checked onclick="updateGifPreview()">
-      شكل
-    </label>
-<br><br>
-
-<input
-    type="file"
-    id="gifFile"
-    accept="image/*,.gif"
-    onchange="loadGifPreview(event)">
-    &nbsp;&nbsp;
-
-    <label>
-      <input type="radio" name="gifType" value="text" onclick="updateGifPreview()">
-      كلام (نص)
-    </label>
-  </div>
-
-  <div class="attacker mt-3">
-    <h3>صندوق ملاحظات البحث (مكتوب "م" سابقاً)</h3>
-
-    <textarea id="hiddenBox" oninput="updateGifPreview()">م</textarea>
-
-    <div class="link-preview" id="linkPrev">
-      رابط محاكاة: https://wa-gift-x.com/funny.gif?q=م
-    </div>
+  
   </div>
 </div>
 
@@ -342,18 +313,30 @@ function loadGifPreview(event){
 
     document.getElementById("gifText").style.display = "none";
 }  
-function updateGifPreview(){
-  const type = document.querySelector('input[name=gifType]:checked').value;
-  const txt = document.getElementById('hiddenBox').value || "بدون نص";
-  const prev = document.getElementById('gifPreview');
-  const link = document.getElementById('linkPrev');
-  if(type === 'shape'){
-    prev.innerText = "[ صورة / شكل GIF ]\n" + txt;
-}else{
-    prev.innerText = "[ نص داخل GIF ]\n" + txt;
-}
-  link.innerText = "رابط محاكاة: https://wa-gift-x.com/funny.gif?q=" + encodeURIComponent(txt);
-}
+<div class="attacker mt-3">
+
+<h3>اختيار ملف المعاينة</h3>
+
+<label>
+<input type="radio" name="mediaType" value="image" checked>
+صورة ثابتة
+</label>
+
+&nbsp;&nbsp;
+
+<label>
+<input type="radio" name="mediaType" value="gif">
+GIF متحرك
+</label>
+
+<br><br>
+
+<input
+type="file"
+id="gifUpload"
+accept="image/*,.gif">
+
+</div>
 
 function exportGif() {
     const gifData = "GIF89a SIMULATION SAFE FILE";
