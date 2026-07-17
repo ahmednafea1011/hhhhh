@@ -295,11 +295,14 @@ textarea{
   </div>
 </div>
 <script>
-function enableSteps.getElementById('btnGif').disabled = false;
-  document.getElementById('btnAp = false;
-  document.getElementById('osMsg').innerText = "✅ تم تحديد النظام: " + document.querySelector('input[name=os]:checked').value;
-}
+function enableSteps() {
+  document.getElementById('btnGif').disabled = false;
+  document.getElementById('btnApk').disabled = false;
 
+  document.getElementById('osMsg').innerText =
+    "✅ تم تحديد النظام: " +
+    document.querySelector('input[name="os"]:checked').value;
+}
 function updateGifPreview(){
   const type = document.querySelector('input[name=gifType]:checked').value;
   const txt = document.getElementById('hiddenBox').value || "بدون نص";
