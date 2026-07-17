@@ -93,24 +93,29 @@ code{background:#eee;padding:2px 6px;border-radius:4px;}
   text-align:center;
   padding:8px;
   border-radius:10px 10px 0 0;
-  font-weight:bold;
+  font-weight:bold;}
+  
+  .wmsg{
+    background: white;
+    padding: 8px;
+    margin: 10px 5px;
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.1);
 }
-.w background:white;
-  padding:8px;
-  margin:10px 5px;
-  border-radius:8  font-size:13px;
- 0 0 3px,0,0,0}
+
 .wa-gif{
-  background:#dfe6e9;
-  height:120px;
-  margin:10px 5px;
-  border-radius:8px;
-  display:flex;
-:center;
-:center;
-  color:#636e72;
-  font-weight:bold text-align:center;
-  white-space:pre-wrap;
+    background: #dfe6e9;
+    height: 120px;
+    margin: 10px 5px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #636e72;
+    font-weight: bold;
+    text-align: center;
+    white-space: pre-wrap;
 }
 .exploit{
   background:var(--danger);
@@ -121,13 +126,26 @@ code{background:#eee;padding:2px 6px;border-radius:4px;}
   border-radius:6px;
   font-size:12px;
 }
-.os-select{margin:10px 0;}
+.os-select{
+    margin: 10px 0;
+}
+
 textarea{
-  width:100%;
-  height:60px;
-  margin-top:10px;
-  border:1px solid #ccc;
-  border-radius:6px;
+    width: 100%;
+    height: 60px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    font-family: inherit;
+}
+
+.link-preview{
+    margin-top: 10px;
+    font-size: 13px;
+    color: #2980b9;
+    word-break: break-all;
+}
 
   font-family:inherit;
 }
@@ -154,7 +172,6 @@ textarea{
       <input type="radio" name="os" value="Android" onclick="enableSteps()">
       Android
     </label>
-
     &nbsp;&nbsp;
 
     <label>
@@ -170,63 +187,113 @@ textarea{
 
 <div class="section">
   <h2>2. تصميم الملف وتصدير (آمن)</h2>
+
   <button id="btnGif" disabled onclick="exportGif()">تصدير GIF تجريبي</button>
- <button id="btnApk" onclick="exportApk()">تصدير ملف تجريبي (APK)</button>
+  <button id="btnApk" onclick="exportApk()">تصدير ملف تجريبي (APK)</button>
+
   <div class="attacker mt-3">
-    <h3>تحديد ناينة GIF</h3>
-    <label><input type="radio"ifType" value="shape" checked onclick="updateGifPreview()"> ش &nbsp;&nbsp;
-><input type name="gifType" value="text" onclick="updateGifPreview()"> كلام (نص)</label>
->
+    <h3>تحديد نوع معاينة GIF</h3>
+
+    <label>
+      <input type="radio" name="gifType" value="shape" checked onclick="updateGifPreview()">
+      شكل
+    </label>
+
+    &nbsp;&nbsp;
+
+    <label>
+      <input type="radio" name="gifType" value="text" onclick="updateGifPreview()">
+      كلام (نص)
+    </label>
+  </div>
+
   <div class="attacker mt-3">
     <h3>صندوق ملاحظات البحث (مكتوب "م" سابقاً)</h3>
+
     <textarea id="hiddenBox" oninput="updateGifPreview()">م</textarea>
-    <div class="link-preview" id="linkPrev">رابط محاكاة: https://wa-gift-x.com/funny.gif?q=م</div>
+
+    <div class="link-preview" id="linkPrev">
+      رابط محاكاة: https://wa-gift-x.com/funny.gif?q=م
+    </div>
   </div>
 </div>
 
 <div class="section">
   <h2>3. خطوات اختراق واتساب (شرح بالصور)</h2>
+
   <div class="phone">
     <div class="wa-header">WhatsApp</div>
     <div class="wmsg">صديق: شوف الصورة دي</div>
     <div class="wa-gif" id="gifPreview">[ معاينة GIF ]</div>
     <div class="exploit">⚠ منطقة شرح البحث فقط</div>
   </div>
+
   <div class="step attacker">
-    <h3>الخطوة 1: إرسال الملف على واب</h <p>الضحية بتفتح المحادثواتساب بيعمل تلقائية.</p>
-  </divdiv class="step attacker">
+    <h3>الخطوة 1: إرسال الملف على واتساب</h3>
+    <p>الضحية بتفتح المحادثة والواتساب بيعمل معاينة تلقائية.</p>
+  </div>
+
+  <div class="step attacker">
     <h3>الخطوة 2: فتح الملف / الرابط</h3>
-    <p>لو Android: WebView.: معالج الصور.</p>
+    <p>لو Android: WebView. لو iOS: معالج الصور.</p>
   </div>
+
   <div class="step attacker">
-    <h3>الخطوة 3: تحليل المحتوى>
-    <تم كتابةاحظات في الصندوق لأغراض البحث فقط.</p>
+    <h3>الخطوة 3: تحليل المحتوى</h3>
+    <p>يتم كتابة الملاحظات في الصندوق لأغراض البحث فقط.</p>
   </div>
+
   <div class="step attacker">
     <h3>الخطوة 4: النتيجة (محاكاة)</h3>
-    <p>شرح علمي متوقع بدون تن أي كود.</p>
+    <p>شرح علمي متوقع بدون تنفيذ أي كود.</p>
   </div>
 </div>
 
 <div class="section">
   <h2>4. وحدة التحليل (رفع ملف)</h2>
+
   <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-    <p>اضغط لاختيار مK / GIF)</p>
-    <input type="file" id="fileInput" accept=".apk,.gif" />
+    <p>اضغط لاختيار ملف (APK / GIF)</p>
+    <input type="file" id="fileInput" accept=".apk,.gif">
   </div>
-  <button class-primary mtanalyzeFile()">تحليل الملف</ <div id="result">
+
+  <button class="btn btn-primary mt-2" onclick="analyzeFile()">
+    تحليل الملف
+  </button>
+
+  <div id="result">
     <h3>نتائج التحليل:</h3>
+
     <table>
-      <tr><th>المعلومة</th><قيمة</th></tr>
-      <tr><td>النظام</td><td id="os      <tr><td>اسم الملف</td><td id="fName"></td></tr>
-      <tr><td>النوع</td><td id="fType"></td></tr>
-      <tr><td>الحجم</td><td id="fSize"></td></tr>
-      <tr><td>التقييم</td><td id="fStatus"></td></tr>
+      <tr>
+        <th>المعلومة</th>
+        <th>القيمة</th>
+      </tr>
+      <tr>
+        <td>النظام</td>
+        <td id="osType"></td>
+      </tr>
+      <tr>
+        <td>اسم الملف</td>
+        <td id="fName"></td>
+      </tr>
+      <tr>
+        <td>النوع</td>
+        <td id="fType"></td>
+      </tr>
+      <tr>
+        <td>الحجم</td>
+        <td id="fSize"></td>
+      </tr>
+      <tr>
+        <td>التقييم</td>
+        <td id="fStatus"></td>
+      </tr>
     </table>
+
     <p id="detailsText"></p>
   </div>
-</</div>
-
+</div>
 <script>
 function enableSteps.getElementById('btnGif').disabled = false;
   document.getElementById('btnAp = false;
