@@ -80,7 +80,9 @@ button:disabled{
     background:#e8f4f8;
     border-color:var(--primary);
 }
-input[type="file"]{display:none;}
+#fileInput{
+    display:none;
+}
 #result{margin-top:20px;padding:15px;border-radius:5px;display:none;}
 .safe{background:#d5f5e3;color:var(--success);border:1px solid var(--success);}
 .malicious{
@@ -199,16 +201,28 @@ textarea{
   <p id="osMsg">
     ⚠ يجب تحديد النظام أولاً لتفعيل باقي الخطوات.
   </p>
+
+</div>
+  
+  <div class="section">
+  <h2>2. export</h2>
+
+<button id="btnGif" onclick="exportGif()">
+  <button id="btnApk" onclick="exportApk()">تصدير ملف (APK)</button>
+
+  <div class="attacker mt-3">
+      ...
+  </div>
+
+  <div class="attacker mt-3">
+      ...
+  </div>
+
 </div>
 
 
 
   
-<div class="section">
-  <h2>2. export </h2>
-
-  <button id="btnGif" disabled onclick="exportGif()">تصدير GIF تجريبي</button>
-  <button id="btnApk" onclick="exportApk()">تصدير ملف  (APK)</button>
 
   <!-- الصق هنا -->
 
@@ -226,17 +240,7 @@ textarea{
     <label>
       <input type="radio" name="mediaType" value="gif">
       GIF متحرك
-    </label>
 
-    <br><br>
-
-    <input
-      type="file"
-      id="gifUpload"
-      accept="image/*,.gif"
-      onchange="loadGifPreview(event)">
-
-  </div>
 
   <div class="attacker mt-3">
 
@@ -341,15 +345,17 @@ textarea{
 <script>
 function enableSteps(){
 
-    document.getElementById("btnGif").disabled = false;
-    document.getElementById("btnApk").disabled = false;
-
+    const btnGif = document.getElementById("btnGif");
+    const btnApk = document.getElementById("btnApk");
     const os = document.querySelector('input[name="os"]:checked');
 
-    if(os){
-        document.getElementById("osMsg").innerText =
+    if(!os) return;
+
+    btnGif.disabled = false;
+    btnApk.disabled = false;
+
+    document.getElementById("osMsg").innerText =
         "✅ تم تحديد النظام: " + os.value;
-    }
 }
   function loadGifPreview(event){
 
@@ -365,7 +371,10 @@ function enableSteps(){
     document.getElementById("gifText").style.display = "none";
 
 }
-
+document.getElementById("gifUpload").addEventListener(
+    "change",
+    loadGifPreview
+);
   
 </label>
 
@@ -444,7 +453,7 @@ resultDiv.className = statusClass;
 resultDiv.style.display = 'block';
 }
 // updateGifPreview();
-
+console.log("JavaScript Loaded");
 </script>
 
 </body>
