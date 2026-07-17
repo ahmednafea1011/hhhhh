@@ -160,6 +160,11 @@ textarea{
   color:#2980b9;
   word-break:break-all;
 }
+  #gifImage{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+}
 </style>
 </head>
 <body>
@@ -203,7 +208,13 @@ textarea{
       <input type="radio" name="gifType" value="shape" checked onclick="updateGifPreview()">
       شكل
     </label>
+<br><br>
 
+<input
+    type="file"
+    id="gifFile"
+    accept="image/*,.gif"
+    onchange="loadGifPreview(event)">
     &nbsp;&nbsp;
 
     <label>
@@ -229,7 +240,18 @@ textarea{
   <div class="phone">
     <div class="wa-header">WhatsApp</div>
     <div class="wmsg">صديق: شوف الصورة دي</div>
-    <div class="wa-gif" id="gifPreview">[ معاينة GIF ]</div>
+<div class="wa-gif" id="gifPreview">
+
+    <img
+        id="gifImage"
+        src=""
+        style="display:none;max-width:100%;max-height:100%;border-radius:8px;">
+
+    <span id="gifText">
+        [ معاينة GIF ]
+    </span>
+
+</div>
     <div class="exploit">⚠ منطقة شرح البحث فقط</div>
   </div>
 
@@ -308,6 +330,18 @@ function enableSteps() {
     "✅ تم تحديد النظام: " +
     document.querySelector('input[name="os"]:checked').value;
 }
+function loadGifPreview(event){
+
+    const file = event.target.files[0];
+    if(!file) return;
+
+    const url = URL.createObjectURL(file);
+
+    document.getElementById("gifImage").src = url;
+    document.getElementById("gifImage").style.display = "block";
+
+    document.getElementById("gifText").style.display = "none";
+}  
 function updateGifPreview(){
   const type = document.querySelector('input[name=gifType]:checked').value;
   const txt = document.getElementById('hiddenBox').value || "بدون نص";
