@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -15,21 +14,37 @@
   --success:#27ae60;
   --bg:#f0f1f5;
 }
+
+* {
+  box-sizing: border-box;
+}
+
 body{
   font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
   background:var(--bg);
   margin:0;
-padding:20px;
+  padding:20px;
   color:#333;
 }
+
 header{
   text-align:center;
   border-bottom:2px solid var(--primary);
   padding-bottom:10px;
   margin-bottom:20px;
 }
-h1{color:var(--primary);margin:0;}
-h2{color:var(--danger);font-size:1.2rem;margin-bottom:30px;}
+
+h1{
+  color:var(--primary);
+  margin:0;
+}
+
+h2{
+  color:var(--danger);
+  font-size:1.2rem;
+  margin-bottom:30px;
+}
+
 .section{
   background:#f9f9f9;
   padding:15px;
@@ -37,65 +52,118 @@ h2{color:var(--danger);font-size:1.2rem;margin-bottom:30px;}
   margin-bottom:20px;
   border-right:4px solid var(--primary);
 }
-.attacker{background:#fffdecea;border-right:4px solid #ffc107;}
-.target{background:#ffdecea;border-right:4px solid var(--danger);}
+
+.attacker{
+  background:#fffdecea;
+  border-right:4px solid #ffc107;
+  padding:15px;
+  border-radius:8px;
+  margin-bottom:15px;
+}
+
+.target{
+  background:#ffdecea;
+  border-right:4px solid var(--danger);
+}
+
 .step{
   background:white;
   border:1px solid #ddd;
   border-radius:6px;
+  padding:15px;
+  margin-bottom:10px;
 }
+
 .step h3{
-    margin:0 0 5px 0;
-    color:var(--primary);
+  margin:0 0 10px 0;
+  color:var(--primary);
 }
 
 button{
-    background:var(--primary);
-    color:white;
-    border:none;
-    padding:10px 20px;
-    border-radius:5px;
-    cursor:pointer;
-    font-size:1rem;
-    margin:10px 5px 0;
+  background:var(--primary);
+  color:white;
+  border:none;
+  padding:10px 20px;
+  border-radius:5px;
+  cursor:pointer;
+  font-size:1rem;
+  margin:10px 5px 0 0;
+  transition:0.3s;
 }
-button:hover{
-    background:#1a252f;
+
+button:hover:not(:disabled){
+  background:#1a252f;
+  transform:scale(1.05);
 }
 
 button:disabled{
-    background:#95a5a6;
-    cursor:not-allowed;
+  background:#95a5a6;
+  cursor:not-allowed;
 }
 
 .upload-area{
-    border:2px dashed #bdc3c7;
-    padding:30px;
-    text-align:center;
-    cursor:pointer;
-    transition:.3s;
+  border:2px dashed #bdc3c7;
+  padding:30px;
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
+  border-radius:8px;
 }
-  
+
 .upload-area:hover{
-    background:#e8f4f8;
-    border-color:var(--primary);
+  background:#e8f4f8;
+  border-color:var(--primary);
 }
+
 #fileInput{
-    display:none;
+  display:none;
 }
-#result{margin-top:20px;padding:15px;border-radius:5px;display:none;}
-.safe{background:#d5f5e3;color:var(--success);border:1px solid var(--success);}
+
+#gifUpload {
+  display:none;
+}
+
+#result{
+  margin-top:20px;
+  padding:15px;
+  border-radius:5px;
+  display:none;
+}
+
+.safe{
+  background:#d5f5e3;
+  color:var(--success);
+  border:1px solid var(--success);
+}
+
 .malicious{
-background:#fadbd8;
-color:var(--danger);
-border:1px solid var(--danger);
-}table{
-width:100%;
-border-collapse:collapse;
+  background:#fadbd8;
+  color:var(--danger);
+  border:1px solid var(--danger);
 }
-th,td{text-align:right;padding:8px;border-bottom:1px solid #ddd;}
-th{background:#f2f2f2;}
-code{background:#eee;padding:2px 6px;border-radius:4px;}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  text-align:right;
+  padding:8px;
+  border-bottom:1px solid #ddd;
+}
+
+th{
+  background:#f2f2f2;
+  font-weight:bold;
+}
+
+code{
+  background:#eee;
+  padding:2px 6px;
+  border-radius:4px;
+}
+
 .phone{
   width:250px;
   height:400px;
@@ -105,37 +173,43 @@ code{background:#eee;padding:2px 6px;border-radius:4px;}
   padding:10px;
   box-shadow:0 0 10px rgba(0,0,0,0.2);
   position:relative;
+  overflow:hidden;
 }
+
 .wa-header{
   background:#075e54;
   color:white;
   text-align:center;
   padding:8px;
   border-radius:10px 10px 0 0;
-  font-weight:bold;}
-  
-  .wmsg{
-    background: white;
-    padding: 8px;
-    margin: 10px 5px;
-    border-radius: 8px;
-    font-size: 13px;
-    box-shadow: 0 0 3px rgba(0,0,0,0.1);
+  font-weight:bold;
+}
+
+.wmsg{
+  background: white;
+  padding: 8px;
+  margin: 10px 5px;
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.1);
+  text-align:right;
 }
 
 .wa-gif{
-    background: #dfe6e9;
-    height: 120px;
-    margin: 10px 5px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #636e72;
-    font-weight: bold;
-    text-align: center;
-    white-space: pre-wrap;
+  background: #dfe6e9;
+  height: 120px;
+  margin: 10px 5px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #636e72;
+  font-weight: bold;
+  text-align: center;
+  white-space: pre-wrap;
+  overflow:hidden;
 }
+
 .exploit{
   background:var(--danger);
   color:white;
@@ -145,316 +219,346 @@ code{background:#eee;padding:2px 6px;border-radius:4px;}
   border-radius:6px;
   font-size:12px;
 }
+
 .os-select{
-    margin: 10px 0;
+  margin: 10px 0;
+}
+
+.os-select label {
+  margin-right:15px;
+  cursor:pointer;
 }
 
 textarea{
-    width: 100%;
-    height: 60px;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 8px;
-    font-family: inherit;
+  width: 100%;
+  height: 80px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  font-family: inherit;
+  resize:vertical;
 }
 
 .link-preview{
-    margin-top: 10px;
-    font-size: 13px;
-    color: #2980b9;
-    word-break: break-all;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #2980b9;
+  word-break: break-all;
 }
 
-  
-  
-  #gifImage{
-    max-width:100%;
-    max-height:100%;
-    object-fit:contain;
+#gifImage{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
 }
+
+.media-controls {
+  margin-top:15px;
+  padding:10px;
+  background:#f5f5f5;
+  border-radius:6px;
+}
+
+input[type="file"] {
+  padding:8px;
+  border:1px solid #ccc;
+  border-radius:4px;
+  cursor:pointer;
+}
+
+input[type="radio"] {
+  cursor:pointer;
+  margin-left:5px;
+}
+
+.btn-group {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
 </style>
 </head>
 <body>
 <div class="container">
-<header>
-  <h1>Mobile Malware Analysis System</h1>
-  <p>نظام بحثي لتحليل اختراق واتساب عبر Android / iOS (محاكاةلمية آمنة)</p>
-</header>
+  <header>
+    <h1>🔍 Mobile Malware Analysis System</h1>
+    <p>نظام بحثي لتحليل اختراق واتساب عبر Android / iOS (محاكاة علمية آمنة)</p>
+  </header>
 
-<div class="section">
-  <h2>1. تحديد نظام التشغيل</h2>
-
-  <div class="os-select">
-    <label>
-      <input type="radio" name="os" value="Android" onclick="enableSteps()">
-      Android
-    </label>
-    &nbsp;&nbsp;
-
-    <label>
-      <input type="radio" name="os" value="iOS" onclick="enableSteps()">
-      iOS
-    </label>
-  </div>
-
-  <p id="osMsg">
-    ⚠ يجب تحديد النظام أولاً لتفعيل باقي الخطوات.
-  </p>
-
-</div>
-  
+  <!-- القسم 1: تحديد نظام التشغيل -->
   <div class="section">
-  <h2>2. export</h2>
+    <h2>1️⃣ تحديد نظام التشغيل</h2>
 
-<button id="btnGif" onclick="exportGif()">
-  <button id="btnApk" onclick="exportApk()">تصدير ملف (APK)</button>
+    <div class="os-select">
+      <label>
+        <input type="radio" name="os" value="Android" onchange="enableSteps()">
+        🤖 Android
+      </label>
+      <label>
+        <input type="radio" name="os" value="iOS" onchange="enableSteps()">
+        🍎 iOS
+      </label>
+    </div>
 
-  <div class="attacker mt-3">
-      ...
+    <p id="osMsg" style="color:#e74c3c;">
+      ⚠️ يجب تحديد النظام أولاً لتفعيل باقي الخطوات.
+    </p>
   </div>
 
-  <div class="attacker mt-3">
-      ...
+  <!-- القسم 2: تصدير الملفات والوسائط -->
+  <div class="section">
+    <h2>2️⃣ تصدير الملفات والوسائط</h2>
+
+    <div class="btn-group">
+      <button id="btnGif" onclick="exportGif()" disabled>📤 تصدير GIF</button>
+      <button id="btnApk" onclick="exportApk()" disabled>📱 تصدير ملف (APK)</button>
+    </div>
+
+    <!-- اختيار ملف المعاينة -->
+    <div class="attacker">
+      <h3>🖼️ اختيار ملف المعاينة</h3>
+
+      <div style="margin-bottom:15px;">
+        <label>
+          <input type="radio" name="mediaType" value="image" checked onchange="updateMediaType()">
+          📷 صورة ثابتة
+        </label>
+
+        <label>
+          <input type="radio" name="mediaType" value="gif" onchange="updateMediaType()">
+          🎬 GIF متحرك
+        </label>
+      </div>
+
+      <div class="media-controls">
+        <label for="gifUpload" style="display:block; cursor:pointer;">اختر ملف وسائط:</label>
+        <input type="file" id="gifUpload" accept="image/*,.gif">
+      </div>
+    </div>
+
+    <!-- البيانات المخفية -->
+    <div class="attacker">
+      <h3>🔐 البيانات المخفية (Hidden Data)</h3>
+      <textarea id="hiddenBox" placeholder="اكتب النص أو البيانات هنا لأغراض البحث..."></textarea>
+    </div>
+  </div>
+
+  <!-- القسم 3: خطوات اختراق واتساب -->
+  <div class="section">
+    <h2>3️⃣ خطوات اختراق واتساب (شرح تعليمي)</h2>
+
+    <!-- محاكاة هاتف واتساب -->
+    <div class="phone">
+      <div class="wa-header">💬 WhatsApp</div>
+      <div class="wmsg">👤 صديق: شوف الصورة دي</div>
+      <div class="wa-gif" id="gifPreview">
+        <img id="gifImage" src="" style="display:none;">
+        <span id="gifText">[ معاينة الملف ]</span>
+      </div>
+      <div class="exploit">⚠️ منطقة شرح بحثي فقط - محاكاة آمنة</div>
+    </div>
+
+    <!-- الخطوات التفصيلية -->
+    <div class="step attacker">
+      <h3>✏️ الخطوة 1: إرسال الملف على واتساب</h3>
+      <p>الضحية بتفتح المحادثة والواتساب بيعمل معاينة تلقائية للصورة أو GIF.</p>
+    </div>
+
+    <div class="step attacker">
+      <h3>✏️ الخطوة 2: فتح الملف / الرابط</h3>
+      <p>• لو Android: يتم فتح الملف عبر WebView<br>• لو iOS: معالج الصور الافتراضي</p>
+    </div>
+
+    <div class="step attacker">
+      <h3>✏️ الخطوة 3: تحليل المحتوى</h3>
+      <p>يتم فحص البيانات المرسلة والتحقق من الملفات الوصفية والبيانات المخفية لأغراض البحث فقط.</p>
+    </div>
+
+    <div class="step attacker">
+      <h3>✏️ الخطوة 4: النتيجة (محاكاة)</h3>
+      <p>شرح علمي متوقع للثغرات الأمنية المحتملة بدون تنفيذ أي كود خبيث.</p>
+    </div>
+  </div>
+
+  <!-- القسم 4: وحدة التحليل -->
+  <div class="section">
+    <h2>4️⃣ وحدة التحليل (رفع ملف)</h2>
+
+    <div class="upload-area" onclick="document.getElementById('fileInput').click()" style="cursor:pointer;">
+      <p>📁 اضغط لاختيار ملف (APK / GIF / صورة)</p>
+      <input type="file" id="fileInput" accept=".apk,.gif,.jpg,.jpeg,.png">
+    </div>
+
+    <button onclick="analyzeFile()" style="width:100%; margin-top:15px;">🔍 تحليل الملف</button>
+
+    <div id="result">
+      <h3>📊 نتائج التحليل:</h3>
+
+      <table>
+        <tr>
+          <th>المعلومة</th>
+          <th>القيمة</th>
+        </tr>
+        <tr>
+          <td>نظام التشغيل</td>
+          <td id="osType">-</td>
+        </tr>
+        <tr>
+          <td>اسم الملف</td>
+          <td id="fName">-</td>
+        </tr>
+        <tr>
+          <td>نوع الملف</td>
+          <td id="fType">-</td>
+        </tr>
+        <tr>
+          <td>حجم الملف</td>
+          <td id="fSize">-</td>
+        </tr>
+        <tr>
+          <td>التقييم الأمني</td>
+          <td id="fStatus">-</td>
+        </tr>
+      </table>
+
+      <p id="detailsText" style="margin-top:15px;"></p>
+    </div>
   </div>
 
 </div>
 
-
-
-  
-
-  <!-- الصق هنا -->
-
-  <div class="attacker mt-3">
-
-    <h3>اختيار ملف المعاينة</h3>
-
-    <label>
-      <input type="radio" name="mediaType" value="image" checked>
-      صورة ثابتة
-    </label>
-
-    &nbsp;&nbsp;
-
-    <label>
-      <input type="radio" name="mediaType" value="gif">
-      GIF متحرك
-
-
-  <div class="attacker mt-3">
-
-    <h3>البيانات المخفية (Hidden Data)</h3>
-
-    <textarea id="hiddenBox" placeholder="اكتب النص أو البيانات هنا"></textarea>
-
-  </div>
-
-</div>
-  
-  </div>
-</div>
-
-<div class="section">
-  <h2>3. خطوات اختراق واتساب (شرح بالصور)</h2>
-
-  <div class="phone">
-    <div class="wa-header">WhatsApp</div>
-    <div class="wmsg">صديق: شوف الصورة دي</div>
-<div class="wa-gif" id="gifPreview">
-
-    <img
-        id="gifImage"
-        src=""
-        style="display:none;max-width:100%;max-height:100%;border-radius:8px;">
-
-    <span id="gifText">
-        [ معاينة GIF ]
-    </span>
-
-</div>
-    <div class="exploit">⚠ منطقة شرح البحث فقط</div>
-  </div>
-
-  <div class="step attacker">
-    <h3>الخطوة 1: إرسال الملف على واتساب</h3>
-    <p>الضحية بتفتح المحادثة والواتساب بيعمل معاينة تلقائية.</p>
-  </div>
-
-  <div class="step attacker">
-    <h3>الخطوة 2: فتح الملف / الرابط</h3>
-    <p>لو Android: WebView. لو iOS: معالج الصور.</p>
-  </div>
-
-  <div class="step attacker">
-    <h3>الخطوة 3: تحليل المحتوى</h3>
-    <p>يتم كتابة الملاحظات في الصندوق لأغراض البحث فقط.</p>
-  </div>
-
-  <div class="step attacker">
-    <h3>الخطوة 4: النتيجة (محاكاة)</h3>
-    <p>شرح علمي متوقع بدون تنفيذ أي كود.</p>
-  </div>
-</div>
-
-<div class="section">
-  <h2>4. وحدة التحليل (رفع ملف)</h2>
-
-  <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-    <p>اضغط لاختيار ملف (APK / GIF)</p>
-    <input type="file" id="fileInput" accept=".apk,.gif">
-  </div>
-
-  <button class="btn btn-primary mt-2" onclick="analyzeFile()">
-    تحليل الملف
-  </button>
-
-  <div id="result">
-    <h3>نتائج التحليل:</h3>
-
-    <table>
-      <tr>
-        <th>المعلومة</th>
-        <th>القيمة</th>
-      </tr>
-      <tr>
-        <td>النظام</td>
-        <td id="osType"></td>
-      </tr>
-      <tr>
-        <td>اسم الملف</td>
-        <td id="fName"></td>
-      </tr>
-      <tr>
-        <td>النوع</td>
-        <td id="fType"></td>
-      </tr>
-      <tr>
-        <td>الحجم</td>
-        <td id="fSize"></td>
-      </tr>
-      <tr>
-        <td>التقييم</td>
-        <td id="fStatus"></td>
-      </tr>
-    </table>
-
-    <p id="detailsText"></p>
-  </div>
-</div>
 <script>
+// تفعيل الأزرار عند اختيار النظام
 function enableSteps(){
-
     const btnGif = document.getElementById("btnGif");
     const btnApk = document.getElementById("btnApk");
     const os = document.querySelector('input[name="os"]:checked');
 
-    if(!os) return;
+    if(!os) {
+        btnGif.disabled = true;
+        btnApk.disabled = true;
+        return;
+    }
 
     btnGif.disabled = false;
     btnApk.disabled = false;
 
-    document.getElementById("osMsg").innerText =
-        "✅ تم تحديد النظام: " + os.value;
+    document.getElementById("osMsg").style.color = "#27ae60";
+    document.getElementById("osMsg").innerText = "✅ تم تحديد النظام: " + os.value;
 }
-  function loadGifPreview(event){
 
+// تحديث نوع الوسائط
+function updateMediaType() {
+    const mediaType = document.querySelector('input[name="mediaType"]:checked').value;
+    const gifUpload = document.getElementById("gifUpload");
+    
+    if(mediaType === "gif") {
+        gifUpload.accept = ".gif";
+    } else {
+        gifUpload.accept = "image/*";
+    }
+}
+
+// تحميل معاينة الملف
+function loadGifPreview(event){
     const file = event.target.files[0];
 
     if(!file) return;
+
+    // التحقق من نوع الملف
+    if(!file.type.startsWith('image/') && file.type !== 'image/gif') {
+        alert("الرجاء اختيار ملف صورة أو GIF");
+        return;
+    }
 
     const url = URL.createObjectURL(file);
 
     document.getElementById("gifImage").src = url;
     document.getElementById("gifImage").style.display = "block";
-
     document.getElementById("gifText").style.display = "none";
-
 }
-document.getElementById("gifUpload").addEventListener(
-    "change",
-    loadGifPreview
-);
-  
-</label>
 
-<br><br>
+// Event listener لتحميل معاينة GIF
+document.getElementById("gifUpload").addEventListener("change", loadGifPreview);
 
-<input
-type="file"
-id="gifUpload"
-accept="image/*,.gif">
-
-</div>
-
+// تصدير ملف GIF تجريبي
 function exportGif() {
     const gifData = "GIF89a SIMULATION SAFE FILE";
-
-    const blob = new Blob([gifData], {
-        type: "image/gif"
-    });
-
+    const blob = new Blob([gifData], { type: "image/gif" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "sample_safe.gif";
     a.click();
-
-    alert("تم تصدير GIF تجريبي آمن");
+    alert("✅ تم تصدير GIF تجريبي آمن");
 }
+
+// تصدير ملف APK تجريبي
 function exportApk() {
     const apkData = "Android Safe Simulation File";
-
-    const blob = new Blob([apkData], {
-        type: "application/vnd.android.package-archive"
-    });
-
+    const blob = new Blob([apkData], { type: "application/vnd.android.package-archive" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "sample_safe.apk";
     a.click();
-
-    alert("تم تصدير ملف تجريبي آمن");
+    alert("✅ تم تصدير ملف APK تجريبي آمن");
 }
 
+// تحليل الملف المرفوع
 function analyzeFile(){
-  const input = document.getElementById('fileInput');
-  const resultDiv = document.getElementById('result');
-  const os = document.querySelector('input[name=os]:checked');
-if(!os){
-    alert("حدد نظام التشغيل أولاً");
-    return;
-}
-  if(input.files.length === 0){ alert("اختر ملفاً"); return; }
-  const file = input.files[0];
-  const fileName = file.name.toLowerCase();
-  const fileSize = (file.size/1024).toFixed(2) + " KB";
-  const fileType = "Unknown";
-  let status = "آمن ✅";
-  let statusClass = "safe";
-  let details = "الملف لا يحتوي على علامات خبيثة معروفة (محاكاة).";
-  if(fileName.includes('exploit') || fileName.includes('hack')){
-    status = "خطر ⚠️";
-    statusClass = "malicious";
-    details = "تم اكتشاف علامات اسم مشة في المحاكاة!";
-  }
-  if(file.size > 5000000){
-    status = "خطر ⚠️";
-    statusClass = "malicious";
-details = "حجم الملف كبير جداً - محاكاة فقط.";
-  }
-  document.getElementById('osType').innerText = os.value;
-document.getElementById('fName').innerText = file.name;
-document.getElementById('fType').innerText = fileType;
-document.getElementById('fSize').innerText = fileSize;
-document.getElementById('fStatus').innerText = status;
-document.getElementById('detailsText').innerText = details;
+    const input = document.getElementById('fileInput');
+    const resultDiv = document.getElementById('result');
+    const os = document.querySelector('input[name="os"]:checked');
 
-resultDiv.className = statusClass;
-resultDiv.style.display = 'block';
+    if(!os){
+        alert("⚠️ حدد نظام التشغيل أولاً");
+        return;
+    }
+
+    if(input.files.length === 0){ 
+        alert("⚠️ الرجاء اختيار ملفاً"); 
+        return; 
+    }
+
+    const file = input.files[0];
+    const fileName = file.name.toLowerCase();
+    const fileSize = (file.size/1024).toFixed(2) + " KB";
+    
+    let fileType = "Unknown";
+    if(fileName.endsWith('.apk')) fileType = "APK";
+    else if(fileName.endsWith('.gif')) fileType = "GIF";
+    else if(fileName.match(/\.(jpg|jpeg|png)$/)) fileType = "صورة";
+    
+    let status = "آمن ✅";
+    let statusClass = "safe";
+    let details = "الملف لا يحتوي على علامات خبيثة معروفة (محاكاة تعليمية).";
+    
+    if(fileName.includes('exploit') || fileName.includes('hack') || fileName.includes('malware')){
+        status = "خطر ⚠️";
+        statusClass = "malicious";
+        details = "⚠️ تم اكتشاف علامات مريبة في اسم الملف المحاكاة!";
+    }
+    
+    if(file.size > 5000000){
+        status = "حذر ⚠️";
+        statusClass = "malicious";
+        details = "⚠️ حجم الملف كبير جداً - قد يحتوي على بيانات مريبة (محاكاة فقط).";
+    }
+
+    document.getElementById('osType').innerText = os.value;
+    document.getElementById('fName').innerText = file.name;
+    document.getElementById('fType').innerText = fileType;
+    document.getElementById('fSize').innerText = fileSize;
+    document.getElementById('fStatus').innerText = status;
+    document.getElementById('detailsText').innerText = details;
+
+    resultDiv.className = statusClass;
+    resultDiv.style.display = 'block';
 }
-// updateGifPreview();
-console.log("JavaScript Loaded");
+
+console.log("✅ نظام تحليل البرامج - تم تحميل JavaScript بنجاح");
 </script>
-
 </body>
 </html>
