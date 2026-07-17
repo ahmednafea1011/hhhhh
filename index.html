@@ -174,6 +174,8 @@ code{
   box-shadow:0 0 10px rgba(0,0,0,0.2);
   position:relative;
   overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
 .wa-header{
@@ -197,7 +199,7 @@ code{
 
 .wa-gif{
   background: #dfe6e9;
-  height: 120px;
+  height: 150px;
   margin: 10px 5px;
   border-radius: 8px;
   display: flex;
@@ -208,6 +210,7 @@ code{
   text-align: center;
   white-space: pre-wrap;
   overflow:hidden;
+  flex-grow: 1;
 }
 
 .wa-gif img {
@@ -215,6 +218,7 @@ code{
   max-height: 100%;
   object-fit: contain;
   border-radius: 8px;
+  display:block;
 }
 
 .exploit{
@@ -252,12 +256,6 @@ textarea{
   font-size: 13px;
   color: #2980b9;
   word-break: break-all;
-}
-
-#gifImage{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
 }
 
 .media-controls {
@@ -302,6 +300,7 @@ input[type="radio"] {
   max-height: 250px;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display:block;
 }
 
 .media-preview .file-info {
@@ -408,7 +407,7 @@ input[type="radio"] {
       <div class="wa-header">💬 WhatsApp</div>
       <div class="wmsg">👤 صديق: شوف الصورة دي</div>
       <div class="wa-gif" id="gifPreview">
-        <img id="gifImage" src="" style="display:none;">
+        <img id="gifImage" src="" alt="صورة مرفوعة">
         <span id="gifText">[ معاينة الملف ]</span>
       </div>
       <div class="exploit">⚠️ منطقة شرح بحثي فقط - محاكاة آمنة</div>
@@ -523,10 +522,12 @@ function loadGifPreview(event){
 
     // التحقق من نوع الملف
     if(!file.type.startsWith('image/')) {
-        alert("الرجاء اختيار ملف صورة أو GIF صحيح");
+        alert("❌ الرجاء اختيار ملف صورة أو GIF صحيح");
         document.getElementById("gifUpload").value = "";
         return;
     }
+
+    console.log("تم اختيار ملف:", file.name, "الحجم:", file.size, "النوع:", file.type);
 
     const url = URL.createObjectURL(file);
 
@@ -536,17 +537,35 @@ function loadGifPreview(event){
     const fileInfo = document.getElementById("fileInfo");
     
     previewImg.src = url;
-    fileInfo.innerText = `📄 ${file.name} | ${(file.size/1024).toFixed(2)} KB`;
-    previewDiv.style.display = "block";
+    
+    previewImg.onload = function() {
+        console.log("✅ تم تحميل الصورة بنجاح في معاينة الملفات");
+        fileInfo.innerText = `📄 ${file.name} | ${(file.size/1024).toFixed(2)} KB`;
+        previewDiv.style.display = "block";
+    };
+
+    previewImg.onerror = function() {
+        console.error("❌ خطأ في تحميل الصورة");
+        alert("❌ خطأ في تحميل الصورة - تأكد من أن الملف صورة صحيحة");
+        document.getElementById("gifUpload").value = "";
+    };
 
     // عرض المعاينة أيضاً في محاكاة الواتساب
-    document.getElementById("gifImage").src = url;
-    document.getElementById("gifImage").style.display = "block";
-    document.getElementById("gifText").style.display = "none";
-}
+    const gifImage = document.getElementById("gifImage");
+    gifImage.src = url;
+    
+    gifImage.onload = function() {
+        console.log("✅ تم تحميل الصورة في محاكاة الواتساب");
+        gifImage.style.display = "block";
+        document.getElementById("gifText").style.display = "none";
+    };
 
-// Event listener لتحميل معاينة GIF
-document.getElementById("gifUpload").addEventListener("change", loadGifPreview);
+    gifImage.onerror = function() {
+        console.error("❌ خطأ في تحميل الصورة في الواتساب");
+        gifImage.style.display = "none";
+        document.getElementById("gifText").style.display = "block";
+    };
+}
 
 // 🎯 دالة تصدير GIF محسّنة - تصدر الصورة المرفوعة كـ GIF
 function exportGif() {
@@ -576,7 +595,18 @@ function exportGif() {
                 downloadGif(blob, 'exported_image.gif');
             }, 'image/gif');
         };
+        
+        img.onerror = function() {
+            console.error("❌ خطأ في معالجة الصورة");
+            alert("❌ خطأ في معالجة الصورة");
+        };
+        
         img.src = e.target.result;
+    };
+
+    reader.onerror = function() {
+        console.error("❌ خطأ في قراءة الملف");
+        alert("❌ خطأ في قراءة الملف");
     };
     
     reader.readAsDataURL(file);
@@ -591,7 +621,12 @@ function downloadGif(blob, fileName) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    
+    // تنظيف الموارد بعد تأخير بسيط
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    }, 100);
+    
     alert("✅ تم التصدير بنجاح!");
 }
 
@@ -607,7 +642,11 @@ function exportApk() {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 100);
+        
         alert("✅ تم تصدير ملف APK تجريبي آمن بنجاح!");
     } catch(error) {
         console.error("خطأ في تصدير APK:", error);
@@ -651,7 +690,7 @@ function analyzeFile(){
     }
     
     if(file.size > 5000000){
-        status = "حذر ⚠️";
+        status = "حذر ⚠���";
         statusClass = "malicious";
         details = "⚠️ حجم الملف كبير جداً - قد يحتوي على بيانات مريبة (محاكاة فقط).";
     }
@@ -667,7 +706,17 @@ function analyzeFile(){
     resultDiv.style.display = 'block';
 }
 
-console.log("✅ نظام تحليل البرامج - تم تحميل JavaScript بنجاح");
+// ⚙️ إعداد event listeners عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    // ربط حدث التغيير لـ file input
+    const gifUploadInput = document.getElementById('gifUpload');
+    if(gifUploadInput) {
+        gifUploadInput.addEventListener('change', loadGifPreview);
+        console.log("✅ تم ربط event listener للـ gif upload");
+    }
+
+    console.log("✅ نظام تحليل البرامج - تم تحميل JavaScript بنجاح");
+});
 </script>
 </body>
 </html>
