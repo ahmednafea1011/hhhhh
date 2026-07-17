@@ -210,6 +210,13 @@ code{
   overflow:hidden;
 }
 
+.wa-gif img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
 .exploit{
   background:var(--danger);
   color:white;
@@ -265,6 +272,7 @@ input[type="file"] {
   border:1px solid #ccc;
   border-radius:4px;
   cursor:pointer;
+  width: 100%;
 }
 
 input[type="radio"] {
@@ -277,6 +285,45 @@ input[type="radio"] {
   gap:10px;
   flex-wrap:wrap;
   margin-top:15px;
+}
+
+.media-preview {
+  margin-top: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  text-align: center;
+  display: none;
+  border: 1px solid #ddd;
+}
+
+.media-preview img {
+  max-width: 100%;
+  max-height: 250px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.media-preview .file-info {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.media-type-options {
+  display: flex;
+  gap: 20px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.media-type-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
 }
 
 </style>
@@ -321,7 +368,7 @@ input[type="radio"] {
     <div class="attacker">
       <h3>🖼️ اختيار ملف المعاينة</h3>
 
-      <div style="margin-bottom:15px;">
+      <div class="media-type-options">
         <label>
           <input type="radio" name="mediaType" value="image" checked onchange="updateMediaType()">
           📷 صورة ثابتة
@@ -334,8 +381,14 @@ input[type="radio"] {
       </div>
 
       <div class="media-controls">
-        <label for="gifUpload" style="display:block; cursor:pointer;">اختر ملف وسائط:</label>
+        <label for="gifUpload" style="display:block; cursor:pointer; margin-bottom: 10px; font-weight: 600;">📁 اختر ملف وسائط:</label>
         <input type="file" id="gifUpload" accept="image/*,.gif">
+      </div>
+
+      <!-- معاينة الملف المرفوع -->
+      <div class="media-preview" id="mediaPreview">
+        <img id="previewImage" src="" alt="معاينة الملف">
+        <div class="file-info" id="fileInfo"></div>
       </div>
     </div>
 
@@ -462,20 +515,31 @@ function updateMediaType() {
     }
 }
 
-// تحميل معاينة الملف
+// تحميل معاينة الملف المرفوع
 function loadGifPreview(event){
     const file = event.target.files[0];
 
     if(!file) return;
 
-    // التحقق من نوع الملف
-    if(!file.type.startsWith('image/') && file.type !== 'image/gif') {
-        alert("الرجاء اختيار ملف صورة أو GIF");
+    // التحقق م�� نوع الملف
+    if(!file.type.startsWith('image/')) {
+        alert("الرجاء اختيار ملف صورة أو GIF صحيح");
+        document.getElementById("gifUpload").value = "";
         return;
     }
 
     const url = URL.createObjectURL(file);
 
+    // عرض المعاينة في قسم الملفات المرفوعة
+    const previewDiv = document.getElementById("mediaPreview");
+    const previewImg = document.getElementById("previewImage");
+    const fileInfo = document.getElementById("fileInfo");
+    
+    previewImg.src = url;
+    fileInfo.innerText = `📄 ${file.name} | ${(file.size/1024).toFixed(2)} KB`;
+    previewDiv.style.display = "block";
+
+    // عرض المعاينة أيضاً في محاكاة الواتساب
     document.getElementById("gifImage").src = url;
     document.getElementById("gifImage").style.display = "block";
     document.getElementById("gifText").style.display = "none";
@@ -484,26 +548,64 @@ function loadGifPreview(event){
 // Event listener لتحميل معاينة GIF
 document.getElementById("gifUpload").addEventListener("change", loadGifPreview);
 
-// تصدير ملف GIF تجريبي
+// إنشاء ملف GIF حقيقي بسيط (1x1 بكسل أبيض)
+function createSimpleGif() {
+    // GIF87a - أبسط صيغة GIF
+    const gifArray = [
+        0x47, 0x49, 0x46,           // GIF
+        0x38, 0x37, 0x61,           // 87a
+        0x01, 0x00,                 // عرض 1
+        0x01, 0x00,                 // ارتفاع 1
+        0x80, 0x00, 0x00,           // Global Color Table
+        0xFF, 0xFF, 0xFF,           // أبيض
+        0x00, 0x00, 0x00,           // أسود
+        0x2C, 0x00, 0x00, 0x00, 0x00, // Image descriptor
+        0x01, 0x00, 0x01, 0x00, 0x00,
+        0x02, 0x02, 0x44, 0x01, 0x00, // Image data
+        0x3B                         // Trailer
+    ];
+    
+    return new Uint8Array(gifArray);
+}
+
+// تصدير ملف GIF
 function exportGif() {
-    const gifData = "GIF89a SIMULATION SAFE FILE";
-    const blob = new Blob([gifData], { type: "image/gif" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "sample_safe.gif";
-    a.click();
-    alert("✅ تم تصدير GIF تجريبي آمن");
+    try {
+        const gifData = createSimpleGif();
+        const blob = new Blob([gifData], { type: "image/gif" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "sample_safe.gif";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        alert("✅ تم تصدير GIF تجريبي آمن بنجاح!");
+    } catch(error) {
+        console.error("خطأ في تصدير GIF:", error);
+        alert("❌ حدث خطأ في تصدير GIF");
+    }
 }
 
 // تصدير ملف APK تجريبي
 function exportApk() {
-    const apkData = "Android Safe Simulation File";
-    const blob = new Blob([apkData], { type: "application/vnd.android.package-archive" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "sample_safe.apk";
-    a.click();
-    alert("✅ تم تصدير ملف APK تجريبي آمن");
+    try {
+        const apkData = "Android Safe Simulation File";
+        const blob = new Blob([apkData], { type: "application/vnd.android.package-archive" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "sample_safe.apk";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        alert("✅ تم تصدير ملف APK تجريبي آمن بنجاح!");
+    } catch(error) {
+        console.error("خطأ في تصدير APK:", error);
+        alert("❌ حدث خطأ في تصدير APK");
+    }
 }
 
 // تحليل الملف المرفوع
@@ -538,7 +640,7 @@ function analyzeFile(){
     if(fileName.includes('exploit') || fileName.includes('hack') || fileName.includes('malware')){
         status = "خطر ⚠️";
         statusClass = "malicious";
-        details = "⚠️ تم اكتشاف علامات مريبة في اسم الملف المحاكاة!";
+        details = "⚠️ تم اكتشاف علامات مريبة في اسم الملف - محاكاة تعليمية!";
     }
     
     if(file.size > 5000000){
